@@ -1,0 +1,34 @@
+version: "2"
+services:
+  nginx:
+    image: dgraziotin/nginx-webdav-nononsense
+    container_name: nginx
+    environment:
+      TZ: Europe/Berlin
+      WEBDAV_USERNAME: user
+      WEBDAV_PASSWORD: password
+      SERVER_NAMES: localhost
+    volumes:
+      - ./transmission/downloads:/data
+    ports:
+      - "80:80"
+      - "443:443"
+
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USER=username
+      - PASS=password
+    volumes:
+      - ./transmission/config:/config
+      - ./transmission/downloads:/downloads
+      - ./transmission/watch:/watch
+    ports:
+      - "9091:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
+    restart: unless-stopped
